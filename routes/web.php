@@ -1,26 +1,21 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\LoanController;
 use App\Http\Controllers\MemberController;
-use Illuminate\Support\Facades\Route;
 
+// Otomatis dialihkan ke halaman buku saat membuka http://127.0.0.1:8000
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('books.index');
 });
 
-// Resource routes praktikum
+// Resource routes untuk CRUD Buku, Kategori, dan Anggota
 Route::resource('books', BookController::class);
-Route::resource('categories', CategoryController::class)->except(['show']);
+Route::resource('categories', CategoryController::class);
 Route::resource('members', MemberController::class);
-Route::resource('loans', LoanController::class);
-Route::put('/loans/{id}/kembalikan', [LoanController::class, 'kembalikan'])
-    ->name('loans.kembalikan');
 
-// Route Grouping prefix /admin (Tugas Pertemuan 2)
-Route::prefix('admin')->group(function () {
-    Route::get('/info', function () {
-        return 'Panel Admin Perpustakaan';
-    })->name('admin.info');
-});
+// Route peminjaman untuk navbar (modul pertemuan berikutnya)
+Route::get('/loans', function () {
+    return "Halaman Peminjaman (Akan dibuat di pertemuan berikutnya)";
+})->name('loans.index');
