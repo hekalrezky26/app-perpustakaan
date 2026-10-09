@@ -28,7 +28,7 @@
                         <form class="inline" action="{{ route('categories.destroy', $category['id']) }}" method="POST">
                             @csrf
                             @method('DELETE')
-                            <button type="submit">Hapus</button>
+                            <button type="submit" onclick="return confirm('Hapus kategori ini?')">Hapus</button>
                         </form>
                     </td>
                 </tr>
@@ -40,5 +40,7 @@
         </tbody>
     </table>
 
-    <p><em>Catatan: data di atas masih data dummy (array statis di Controller), belum dari database. Migration &amp; Model Eloquent baru dibuat di Pertemuan 5.</em></p>
+    <div style="margin-top: 16px;">
+        {{ $categories->links() }}
+    </div>
 @endsection

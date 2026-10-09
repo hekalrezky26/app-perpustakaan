@@ -43,17 +43,32 @@
         </div>
 
         <div class="form-group">
+            <label for="isbn">ISBN</label>
+            <input type="text" id="isbn" name="isbn" value="{{ old('isbn') }}">
+            @error('isbn')
+                <div class="text-danger">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <div class="form-group">
             <label for="stok">Stok</label>
-            <input type="number" id="stok" name="stok" value="{{ old('stok') }}">
+            <input type="number" id="stok" name="stok" value="{{ old('stok', 1) }}">
             @error('stok')
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
 
         <div class="form-group">
-            <label for="kategori">Kategori</label>
-            <input type="text" id="kategori" name="kategori" value="{{ old('kategori') }}">
-            @error('kategori')
+            <label for="category_id">Kategori</label>
+            <select id="category_id" name="category_id">
+                <option value="">-- Pilih Kategori --</option>
+                @foreach ($categories as $cat)
+                    <option value="{{ $cat->id }}" {{ old('category_id') == $cat->id ? 'selected' : '' }}>
+                        {{ $cat->nama_kategori }}
+                    </option>
+                @endforeach
+            </select>
+            @error('category_id')
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
