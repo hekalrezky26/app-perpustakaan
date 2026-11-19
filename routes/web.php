@@ -1,21 +1,36 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\LoanController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Route;
 
-// Otomatis dialihkan ke halaman buku saat membuka http://127.0.0.1:8000
-Route::get('/', function () {
-    return redirect()->route('books.index');
+// Public
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// Protected
+Route::middleware(['auth'])->group(function () {
+    Route::get('/', function () {
+        return redirect()->route('books.index');
+    });
+
+    Route::resource('books', BookController::class);
+    Route::resource('members', MemberController::class);
+    Route::resource('loans', LoanController::class);
+    Route::put('/loans/{id}/kembalikan', [LoanController::class, 'kembalikan'])
+        ->name('loans.kembalikan');
+
+    // Profil & Ganti Password (Tugas)
+    Route::get('/profil', [ProfileController::class, 'show'])->name('profile.show');
+    Route::put('/profil/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+
+    // Khusus Admin
+    Route::middleware(['admin'])->group(function () {
+        Route::resource('categories', CategoryController::class)->except(['show']);
+    });
 });
-
-// Resource routes untuk CRUD Buku, Kategori, dan Anggota
-Route::resource('books', BookController::class);
-Route::resource('categories', CategoryController::class);
-Route::resource('members', MemberController::class);
-
-// Route peminjaman untuk navbar (modul pertemuan berikutnya)
-Route::get('/loans', function () {
-    return "Halaman Peminjaman (Akan dibuat di pertemuan berikutnya)";
-})->name('loans.index');

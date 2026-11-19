@@ -1,25 +1,19 @@
 <?php
 
-namespace Database\Seeders;
+namespace App\Http\Middleware;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
+use Closure;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
-class DatabaseSeeder extends Seeder
+class CheckAdminRole
 {
-    use WithoutModelEvents;
-
-    /**
-     * Seed the application's database.
-     */
-    public function run(): void
+    public function handle(Request $request, Closure $next): Response
     {
-        // User::factory(10)->create();
+        if ($request->user()?->role !== 'admin') {
+            abort(403, 'Halaman ini hanya bisa diakses oleh admin.');
+        }
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        return $next($request);
     }
 }
